@@ -1,9 +1,44 @@
-stage('Deploy') {
-    steps {
-        sh '''
-        pm2 delete nodejs-app || true
-        pm2 start app.js --name nodejs-app
-        pm2 save
-        '''
+pipeline {
+    agent any
+
+    tools {
+        nodejs 'NodeJS'
+    }
+
+    stages {
+
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+
+        stage('Install Dependencies') {
+            steps {
+                sh 'npm install'
+            }
+        }
+
+        stage('Test') {
+            steps {
+                sh 'npm test'
+            }
+        }
+
+        stage('Build') {
+            steps {
+                echo 'Build completed successfully!'
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                sh '''
+                    pm2 delete nodejs-app || true
+                    pm2 start app.js --name nodejs-app
+                    pm2 save
+                '''
+            }
+        }
     }
 }
