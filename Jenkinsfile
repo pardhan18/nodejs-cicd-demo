@@ -6,6 +6,7 @@ pipeline {
     }
 
     stages {
+
         stage('Checkout') {
             steps {
                 checkout scm
@@ -27,6 +28,15 @@ pipeline {
         stage('Build') {
             steps {
                 echo 'Build completed successfully!'
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                sh '''
+                pkill -f "node app.js" || true
+                nohup node app.js > app.log 2>&1 &
+                '''
             }
         }
     }
